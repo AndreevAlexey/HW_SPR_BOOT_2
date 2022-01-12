@@ -5,8 +5,8 @@ import autorization.hw_spr_boot_2.exceptions.InvalidCredentials;
 import autorization.hw_spr_boot_2.exceptions.UnauthorizedUser;
 import autorization.hw_spr_boot_2.service.AuthorizationService;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -23,16 +23,14 @@ public class AuthorizationController {
         return service.getAuthorities(user, password);
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedUser.class)
-    String handlerUnauthorizedUser(UnauthorizedUser exp) {
+    ResponseEntity<String> handlerUnauthorizedUser(UnauthorizedUser exp) {
         System.out.println(exp.getMessage());
-        return exp.getMessage();
+        return new ResponseEntity<>(exp.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidCredentials.class)
-    String handlerInvalidCredentials(InvalidCredentials exp) {
-        return exp.getMessage();
+    ResponseEntity<String> handlerInvalidCredentials(InvalidCredentials exp) {
+        return new ResponseEntity<>(exp.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
